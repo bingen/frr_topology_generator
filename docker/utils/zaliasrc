@@ -1,0 +1,31 @@
+#! /bin/echo No, no... It must be sourced
+
+alias grep='grep --color'
+
+alias ls="ls --color=auto"
+alias ll="ls -laF"
+
+alias rm='nocorrect rm -iv'
+alias mv='nocorrect mv -iv'
+alias cp='nocorrect cp -ivp'
+alias mkdir='nocorrect mkdir'
+
+alias df='df -h'
+alias du='/usr/bin/du -h'
+alias dudir='du --max-depth=1'
+alias dubigm='du -m --max-depth=1 | sort -rnk 1,1 | more'
+alias dubigk='du -k --max-depth=1 | sort -rnk 1,1 | more'
+
+alias more='less'
+alias sort='sort -dfb'
+
+alias diff='diff -r'
+
+alias grin='grep -RIin'
+alias grn='grep -RIn'
+
+alias gti='git'
+alias glpo='git log --pretty=oneline'
+
+alias if4='ifconfig | grep "Ethernet\|inet addr"'
+alias xclip="xclip -selection c"
