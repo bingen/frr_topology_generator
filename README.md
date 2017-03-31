@@ -1,13 +1,13 @@
 FRR topology generator
 ========================
 
-This repository starts containers, links bridges, creates byobu sessions and starts [FRR][https://github.com/FRRouting/frr] daemons given a network topology in .DOT format.
+This repository starts containers, links bridges, creates byobu sessions and starts [FRR](https://github.com/FRRouting/frr) daemons given a network topology in .DOT format.
 
 Dependencies
 ------------
 
-- Those of [FRR][https://github.com/FRRouting/frr/blob/master/doc/Building_FRR_on_Debian8.md]
-- [Docker][https://store.docker.com/editions/community/docker-ce-server-debian?tab=description]
+- Those of [FRR](https://github.com/FRRouting/frr/blob/master/doc/Building_FRR_on_Debian8.md)
+- [Docker](https://store.docker.com/editions/community/docker-ce-server-debian?tab=description)
 - byobu
 
 Description
