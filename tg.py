@@ -11,7 +11,6 @@ DOCKER_IMAGE = "frr/docker-frr"
 CONTAINER_BASE_NAME="frr"
 CONTAINER_BASE_PATH='/root/'
 CONTAINER_WORKSPACE_PATH=CONTAINER_BASE_PATH + 'workspace'
-BYOBU_SCRIPT_MAIN = "utils/byobu_main.sh"
 BYOBU_SCRIPT_CONTAINER = "byobu_container.sh"
 RENAME_IFACE_SCRIPT = "rename_iface.sh"
 DOCKER_SERVER_VERSION="1.24"
@@ -205,8 +204,6 @@ def generate_topology(nodes, links):
     generate_containers(nodes)
     connect_containers(links)
 
-    # run main host byobu
-    subprocess.call(["sudo", BYOBU_SCRIPT_MAIN, SHELL, BASE_PATH_MAIN])
     # run container byobus
     start_containers(nodes)
 

@@ -1,7 +1,6 @@
 *.dot
+!topology.dot
 *.png
 *.ps
-byobu_main.sh
-conf.py
 __pycache__
 jeffs.sh
