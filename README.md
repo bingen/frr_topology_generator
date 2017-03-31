@@ -8,7 +8,6 @@ Dependencies
 
 - Those of [FRR](https://github.com/FRRouting/frr/blob/master/doc/Building_FRR_on_Debian8.md)
 - [Docker](https://store.docker.com/editions/community/docker-ce-server-debian?tab=description)
-- byobu
 
 Description
 -----------
