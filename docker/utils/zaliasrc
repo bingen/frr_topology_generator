@@ -27,5 +27,5 @@ alias grn='grep -RIn'
 alias gti='git'
 alias glpo='git log --pretty=oneline'
 
-alias if4='ifconfig | grep "Ethernet\|inet addr"'
+alias if4='ifconfig | grep -B 1 "inet addr"'
 alias xclip="xclip -selection c"

@@ -22,7 +22,7 @@ echo "Starting byobu session $SESSION"
 I=0
 
 # -2: forces 256 colors,
-byobu-tmux -2 new-session -d -s $SESSION
+byobu-tmux -2 new-session -d -s $SESSION $SHELL
 
 # Daemon windows
 for daemon in 'zebra' 'ospfd' 'bgpd' 'ldpd' 'ospf6d' 'isisd'; do

@@ -14,7 +14,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -yqq && \
     flex \
     libjson-c-dev \
     byobu \
+    nano \
+    vim \
+    emacs-nox \
     zsh \
+    htop \
+    multitail \
+    tcpdump \
     bridge-utils \
     ethtool && \
     rm -rf /var/lib/apt/lists/*
