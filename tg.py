@@ -7,6 +7,7 @@ import os
 import docker
 import json
 
+BRIDGE_SUBNET_PREFIX='172.16.'
 DOCKER_IMAGE = "frr/docker-frr"
 CONTAINER_BASE_NAME="frr"
 CONTAINER_BASE_PATH='/root/'
@@ -104,7 +105,15 @@ def create_bridges(nodes, links):
     for link in links:
         b = b + 1
         bridge_name = "docker-" + str(b) + "-" + link[0] + "-" + link[1]
-        network = client.networks.create(bridge_name, driver="bridge")#, enable_ipv6=True)
+        ipam_pool = docker.types.IPAMPool(
+            subnet=BRIDGE_SUBNET_PREFIX + str(b) + '.0/24',
+            gateway=BRIDGE_SUBNET_PREFIX + str(b) + '.1'
+        )
+        ipam_config = docker.types.IPAMConfig(
+            pool_configs=[ipam_pool]
+        )
+        network = client.networks.create(bridge_name, driver="bridge",
+                                         ipam=ipam_config)#, enable_ipv6=True)
         # store docker network(bridge) in link vector
         link.append(network)
 
