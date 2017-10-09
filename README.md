@@ -18,6 +18,7 @@ This script is intended to help with FRR manual testing, not for completely auto
     |
     └── workspace
         ├── frr
+        ├── frr_topology_generator (this repo)
         └── config
             ├── scenario1
             │   ├── zebra-1.conf
