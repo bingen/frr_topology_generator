@@ -67,16 +67,16 @@ Create automated topologies
 
 There are scripts to create some custom topologies. They will generate DOT and FRR config files.
 
-    ./full_mesh.py N config_folder
-    ./star.py N config_folder
+    ./utils/full_mesh.py N config_folder
+    ./utils/star.py N config_folder
 
 where ```N``` is the number of nodes and ```config_folder``` the path for FFR config files.
 
 You can add routes to BGP config files with the following script:
 
-    ./add_bgp_routes.sh N original_file config_folder
+    ./utils/add_bgp_routes.sh N original_file config_folder
 
-```N``` and ```config_folder``` as above, ```original_file``` is a file with BGP routes in FRR format:
+```N``` and ```config_folder``` as above, ```original_file``` is a file with BGP routes in FRR format (e.g. ```bgpd_minus1.conf```):
 
      network X.X.X.X
 
