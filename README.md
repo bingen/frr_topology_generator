@@ -61,3 +61,23 @@ An image of the topology can be generated with graphviz package:
     dot -Tpng topology.dot -o topology.png
 
 You can use ```clean.sh``` script to destroy containers and bridges to be able to run the topology generator again from scratch.
+
+Create automated topologies
+---------------------------
+
+There are scripts to create some custom topologies. They will generate DOT and FRR config files.
+
+    ./full_mesh.py N config_folder
+    ./star.py N config_folder
+
+where ```N``` is the number of nodes and ```config_folder``` the path for FFR config files.
+
+You can add routes to BGP config files with the following script:
+
+    ./add_bgp_routes.sh N original_file config_folder
+
+```N``` and ```config_folder``` as above, ```original_file``` is a file with BGP routes in FRR format:
+
+     network X.X.X.X
+
+The script will shuffle and truncate the original file for each node, in order to provide some diversity.

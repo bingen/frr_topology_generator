@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import sys
 
 def get_ip_body(i, j):
