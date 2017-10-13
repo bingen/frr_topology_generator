@@ -2,6 +2,8 @@
 
 import sys
 
+BRIDGE_SUBNET_PREFIX='10.'
+
 def get_ip_body(i, j):
     if i < j:
         return str(i) + "." + str(j)
@@ -10,35 +12,35 @@ def get_ip_body(i, j):
 def generate_zebra_config_file(i, nodes, folder):
     with open(folder+"/zebra-" + str(i) + ".conf", "w") as f:
         f.write("interface lo\n")
-        f.write(" ip address 1.0.0." + str(i) + "/32\n")
+        f.write(" ip address " + BRIDGE_SUBNET_PREFIX + "0.0." + str(i) + "/32\n")
         if i == 1:
             for j in range(2, nodes+1):
                 f.write("interface 1-xge"+ str(j) + "\n")
-                f.write(" ip address 1.1." + str(j) + "." + str(i) + "/24\n")
+                f.write(" ip address " + BRIDGE_SUBNET_PREFIX + "1." + str(j) + "." + str(i) + "/24\n")
         else:
             f.write("interface "+ str(i) + "-xge1\n")
-            f.write(" ip address 1.1." + str(i) + "." + str(i) + "/24\n")
+            f.write(" ip address " + BRIDGE_SUBNET_PREFIX + "1." + str(i) + "." + str(i) + "/24\n")
 def generate_ospf_config_file(i, nodes, folder):
     with open(folder+"/ospfd-" + str(i) + ".conf", "w") as f:
         f.write("router ospf\n")
-        f.write(" ospf router-id 1.0.0." + str(i) + "\n")
-        f.write(" network 1.0.0." + str(i) + "/32 area 0.0.0.0\n")
+        f.write(" ospf router-id " + BRIDGE_SUBNET_PREFIX + "0.0." + str(i) + "\n")
+        f.write(" network " + BRIDGE_SUBNET_PREFIX + "0.0." + str(i) + "/32 area 0.0.0.0\n")
         if i == 1:
             for j in range(2, nodes+1):
-                f.write(" network 1.1." + str(j) + ".0/24 area 0.0.0.0\n")
+                f.write(" network " + BRIDGE_SUBNET_PREFIX + "1." + str(j) + ".0/24 area 0.0.0.0\n")
         else:
-            f.write(" network 1.1." + str(i) + ".0/24 area 0.0.0.0\n")
+            f.write(" network " + BRIDGE_SUBNET_PREFIX + "1." + str(i) + ".0/24 area 0.0.0.0\n")
 def generate_bgp_config_file(i, nodes, folder):
     BGP_ID = "65000"
     with open(folder+"/bgpd-" + str(i) + ".conf", "w") as f:
         f.write("router bgp " + BGP_ID + "\n")
-        f.write(" bgp router-id 1.0.0." + str(i) + "\n")
+        f.write(" bgp router-id " + BRIDGE_SUBNET_PREFIX + "0.0." + str(i) + "\n")
         if i == 1:
             for j in range(2, nodes+1):
-                f.write(" neighbor 1.1." + str(j) + "." + str(j) + \
+                f.write(" neighbor " + BRIDGE_SUBNET_PREFIX + "1." + str(j) + "." + str(j) + \
                         " remote-as " + BGP_ID + "\n")
         else:
-            f.write(" neighbor 1.1." + str(i) + ".1" + \
+            f.write(" neighbor " + BRIDGE_SUBNET_PREFIX + "1." + str(i) + ".1" + \
                     " remote-as " + BGP_ID + "\n")
 
 def generate_config_files(nodes, folder):

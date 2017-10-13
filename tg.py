@@ -7,7 +7,7 @@ import os
 import docker
 import json
 
-BRIDGE_SUBNET_PREFIX='172.16.'
+BRIDGE_SUBNET_PREFIX='10.'
 DOCKER_IMAGE = "frr/docker-frr"
 CONTAINER_BASE_NAME="frr"
 CONTAINER_BASE_PATH='/root/'
@@ -100,14 +100,15 @@ def process_file(file_path):
     return nodes, links
 
 def create_bridges(nodes, links):
+    spare_bridges = {}
     client = docker.from_env(version=DOCKER_SERVER_VERSION)
     b = 0 # bridge index, to allow more than 1 link among 2 nodes
     for link in links:
         b = b + 1
         bridge_name = "docker-" + str(b) + "-" + link[0] + "-" + link[1]
         ipam_pool = docker.types.IPAMPool(
-            subnet=BRIDGE_SUBNET_PREFIX + str(b) + '.0/24',
-            gateway=BRIDGE_SUBNET_PREFIX + str(b) + '.1'
+            subnet=BRIDGE_SUBNET_PREFIX + link[0] + "." + link[1] + '.0/24',
+            gateway=BRIDGE_SUBNET_PREFIX + link[0] + "." + link[1] + '.1'
         )
         ipam_config = docker.types.IPAMConfig(
             pool_configs=[ipam_pool]
@@ -116,7 +117,22 @@ def create_bridges(nodes, links):
                                          ipam=ipam_config)#, enable_ipv6=True)
         # store docker network(bridge) in link vector
         link.append(network)
-
+    # generate unpaired bridges to allow connections to outside
+    for node in nodes:
+        b = b + 1
+        bridge_name = "docker-" + str(b) + "-" + node + "-" + node
+        ipam_pool = docker.types.IPAMPool(
+            subnet=BRIDGE_SUBNET_PREFIX + node + '.' + node + '.0/24',
+            gateway=BRIDGE_SUBNET_PREFIX + node + '.' + node + '.1'
+        )
+        ipam_config = docker.types.IPAMConfig(
+            pool_configs=[ipam_pool]
+        )
+        network = client.networks.create(bridge_name, driver="bridge",
+                                         ipam=ipam_config)#, enable_ipv6=True)
+        # store docker network(bridge) in link vector
+        spare_bridges[node] = network
+    return spare_bridges
 def generate_docker_image():
     client = docker.from_env(version=DOCKER_SERVER_VERSION)
     client.images.build(path='docker', tag=DOCKER_IMAGE)
@@ -189,6 +205,18 @@ def connect_containers(links):
         rename_iface(node1, prefix, link[0] + "-xge" + link[1])
         # second node
         rename_iface(node2, prefix, link[1] + "-xge" + link[0])
+def connect_spare_bridges(nodes, spare_bridges):
+    for node in nodes:
+        node_name = CONTAINER_BASE_NAME + node
+        network = spare_bridges[node]
+        network.connect(node_name)
+        # Change iface name
+        iface_name = node + "-xge" + node
+        print(iface_name)
+        subnet = network.attrs['IPAM']['Config'][0]['Subnet']
+        prefix = subnet[0:subnet.find('.0')]
+        print(prefix)
+        rename_iface(node_name, prefix, iface_name)
 
 def start_containers(nodes):
     client = docker.from_env(version=DOCKER_SERVER_VERSION)
@@ -206,12 +234,13 @@ def start_containers(nodes):
 
 def generate_topology(nodes, links):
     # Bridges
-    create_bridges(nodes, links)
+    spare_bridges = create_bridges(nodes, links)
 
     # generate and run containers
     generate_docker_image()
     generate_containers(nodes)
     connect_containers(links)
+    connect_spare_bridges(nodes, spare_bridges)
 
     # run container byobus
     start_containers(nodes)
