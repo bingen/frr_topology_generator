@@ -232,15 +232,22 @@ def start_containers(nodes):
         print(byobu_container_command)
         kemestas.exec_run(byobu_container_command)#, detach=True, tty=True)
 
+def create_networks(nodes):
+    for node in nodes:
+        container_name = CONTAINER_BASE_NAME + node
+        subprocess.call(['pipework', 'br1', container_name, BRIDGE_SUBNET_PREFIX + "1.1." + node + "/24"])
+
 def generate_topology(nodes, links):
     # Bridges
-    spare_bridges = create_bridges(nodes, links)
+    #spare_bridges = create_bridges(nodes, links)
 
     # generate and run containers
     generate_docker_image()
     generate_containers(nodes)
-    connect_containers(links)
-    connect_spare_bridges(nodes, spare_bridges)
+    #connect_containers(links)
+    #connect_spare_bridges(nodes, spare_bridges)
+
+    #create_networks(nodes)
 
     # run container byobus
     start_containers(nodes)

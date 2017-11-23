@@ -2,7 +2,9 @@
 
 import sys
 
-BRIDGE_SUBNET_PREFIX='10.'
+BRIDGE_SUBNET_PREFIX='172.17.0.'
+LOOPBACK_PREFIX='10.0.0.'
+NEIGHBOR_PREFIX='10.0.1.'
 
 def get_ip_body(i, j):
     if i < j:
